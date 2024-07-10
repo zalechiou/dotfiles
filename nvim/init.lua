@@ -64,11 +64,6 @@ vim.api.nvim_create_autocmd({ "BufWritePre" }, {
   end,
 })
 
---require('vimp').nnoremap('F', function()
---  print('go formatting')
---  run({}, vim.api.nvim_get_current_buf(), 'gofmt')
---  print('go formatting end')
---end)
 -- To do GoFmt on Go file save
 --local format_sync_grp = vim.api.nvim_create_augroup("GoImport", {})
 --vim.api.nvim_create_autocmd("BufWritePre", {
