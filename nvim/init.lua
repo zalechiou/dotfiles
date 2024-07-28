@@ -28,6 +28,7 @@ require('pckr').add{
 
 local vimrc = vim.fn.stdpath("config") .. "/vimrc.vim"
 vim.cmd.source(vimrc)
+vim.o.mouse = ""
 
 require('starry').setup()
 vim.cmd[[colorscheme mariana]] -- tokyonight moonlight
