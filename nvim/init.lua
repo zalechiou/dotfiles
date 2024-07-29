@@ -38,7 +38,8 @@ vim.cmd[[colorscheme mariana]] -- tokyonight moonlight
 
 --require'lspconfig'.ruff_lsp.setup{}
 
-require('vimp').nnoremap('N', function()
+vim.g.mapleader = " "
+require('vimp').nnoremap('<leader>N', function()
     if not vim.opt.number:get() then
       vim.opt.number = true
       vim.opt.relativenumber = true
