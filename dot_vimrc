@@ -1,0 +1,96 @@
+set ai
+set nocompatible
+set backspace=indent,eol,start
+set history=200
+set ruler
+set showcmd
+set incsearch
+set nofsync
+set mouse=
+set ts=4
+set sw=4
+set expandtab
+set nobackup
+
+" some settings extracted from Amir Salihefendic ( http://amix.dk/ )
+set wildmenu
+set so=7
+"Change buffer - without saving
+set hid
+"Set backspace
+set backspace=eol,start,indent
+"Bbackspace and cursor keys wrap to
+set wrap
+set whichwrap+=<,>,h,l
+"Ignore case when searching
+set ignorecase
+set incsearch
+"Set magic on
+set magic
+"No sound on errors.
+set noerrorbells
+set novisualbell
+set showmatch
+set mat=2
+set hlsearch
+set t_Co=256
+set noudf
+
+let @/ = ""
+"set viminfo=""
+
+if has("autocmd")
+
+  " Enable file type detection.
+  " Use the default filetype settings, so that mail gets 'tw' set to 72,
+  " 'cindent' is on in C files, etc.
+  " Also load indent files, to automatically do language-dependent indenting.
+  filetype plugin indent on
+
+  " Put these in an autocmd group, so that we can delete them easily.
+  augroup vimrcEx
+  au!
+
+  " For all text files set 'textwidth' to 78 characters.
+  autocmd FileType text setlocal textwidth=78
+  autocmd FileType gitcommit setlocal textwidth=72
+
+  " When editing a file, always jump to the last known cursor position.
+  " Don't do it when the position is invalid or when inside an event handler
+  " (happens when dropping a file on gvim).
+  autocmd BufReadPost *
+    \ if line("'\"") > 0 && line("'\"") <= line("$") |
+    \   exe "normal g`\"" |
+    \ endif
+
+  augroup END
+
+else
+
+  set autoindent        " always set autoindenting on
+
+endif " has("autocmd")
+
+
+"map <F9> <ESC>:set hls!<BAR>set hls?<CR>
+nnoremap <silent> <M-9> <ESC>:nohls<CR>
+nnoremap <silent> <M-8> <ESC>:set invpaste<CR>
+nnoremap <silent> <M-F11> <ESC>:%!xxd<CR>
+nnoremap <silent> <M-F12> <ESC>:%!xxd -r<CR>
+nnoremap <C-K> <ESC>d$
+" map for vim70
+if version >= 700
+    nnoremap <M-1> <ESC>:tabn 1<CR>
+    nnoremap <M-2> <ESC>:tabn 2<CR>
+    nnoremap <M-3> <ESC>:tabn 3<CR>
+    nnoremap <M-4> <ESC>:tabn 4<CR>
+    nnoremap <M-5> <ESC>:tabn 5<CR>
+    nnoremap <C-W> <ESC>:tabclose<CR>
+    nnoremap <C-N> <ESC>:tabnext<CR>
+    nnoremap <C-P> <ESC>:tabp<CR>
+endif
+
+" Switch Window
+nnoremap <Tab> <C-w>w
+nnoremap <BS> <C-w>W
+let @/ = ""
