@@ -12,6 +12,7 @@ config.hide_mouse_cursor_when_typing = false
 config.initial_cols = 132
 config.initial_rows = 43
 config.line_height = 1.0
+config.tab_max_width = 48
 config.mouse_bindings = {
     {
         event = {Up = {streak = 1, button = 'Left'}},
@@ -52,30 +53,31 @@ config.window_padding = {
     top = 0,
 }
 
--- function tab_title(tab_info)
---   local title = tab_info.tab_title
---   -- if the tab title is explicitly set, take that
---   if title and #title > 0 then
---     return title
---   end
---   -- Otherwise, use the title from the active pane
---   -- in that tab
---   return tab_info.active_pane.title
--- end
--- 
--- wezterm.on('format-tab-title', function(tab, tabs, panes, config, hover, max_width)
---   local title = tab_title(tab)
---   if tab.is_active then
---     return {
---       { Background = { Color = 'blue' } },
---       { Text = ' ' .. title .. ' ' },
---     }
---   end
---   return title
--- end)
-local SOLID_LEFT_ARROW = wezterm.nerdfonts.pl_right_hard_divider
+config.use_fancy_tab_bar = false
+config.show_new_tab_button_in_tab_bar = true
+config.tab_max_width = 999
 
--- The filled in variant of the > symbol
+function get_max_cols(window)
+  local tab = window:active_tab()
+  local cols = tab:get_size().cols
+  return cols
+end
+
+wezterm.on(
+  'window-config-reloaded',
+  function(window)
+    wezterm.GLOBAL.cols = get_max_cols(window)
+  end
+)
+
+wezterm.on(
+  'window-resized',
+  function(window, pane)
+    wezterm.GLOBAL.cols = get_max_cols(window)
+  end
+)
+
+local SOLID_LEFT_ARROW = wezterm.nerdfonts.pl_right_hard_divider
 local SOLID_RIGHT_ARROW = wezterm.nerdfonts.pl_left_hard_divider
 
 -- This function returns the suggested title for a tab.
@@ -112,9 +114,12 @@ wezterm.on(
 
     local title = tab_title(tab)
 
+    _max_width = (wezterm.GLOBAL.cols // #tabs)
     -- ensure that the titles fit in the available space,
     -- and that we have room for the edges.
-    title = wezterm.truncate_right(title, max_width - 2)
+    title = wezterm.truncate_right(title, _max_width - 7)
+    pad_length = (_max_width - #title -7) // 2
+    title = '[' .. tab.tab_index + 1 .. '] ' .. string.rep(' ', pad_length) .. title .. string.rep(' ', pad_length)
 
     return {
       { Background = { Color = edge_background } },
@@ -130,7 +135,7 @@ wezterm.on(
   end
 )
 
-wezterm.on('format-window-title', function(tab, pane, tabes, panes, config)
+wezterm.on('format-window-title', function(tab, pane, tabs, panes, config)
     local zoomed = ''
     if tab.active_pane.is_zoomed then
         zoomed = '[Z] '
